@@ -72,12 +72,18 @@ def generer_diagramme_sequenciel(time, appareils, data, line_styles=None, title=
     ax.legend()
 
     # Ajout des durées sous le graphique
-    if durations:
-        for i, duration in enumerate(durations):
-            ax.text(time[i] + 0.5, -1, f'{duration}s', ha='center', va='center', fontsize=12, color='black')
-
-
+        if durations:
+            if len(durations) == len(time):
+                for i, duration in enumerate(durations):
+                    ax.text(time[i] + 0.5, -1, f'{duration}s', ha='center', va='center', fontsize=12, color='black')
+            else:
+                st.error("Le nombre de durées ne correspond pas au nombre d'étapes.")
+                
+    st.pyplot(fig)
     return fig
+
+    except Exception as e:
+        st.error(f"Erreur lors de la génération du diagramme : {e}")
 
 # Interface Streamlit
 lang = st.selectbox('Choisissez la langue', ['fr', 'de', 'it'])
