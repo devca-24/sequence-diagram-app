@@ -71,6 +71,12 @@ def generer_diagramme_sequenciel(time, appareils, data, line_styles=None, title=
     ax.set_title(title, fontsize=20)
     ax.legend()
 
+    # Ajout des durées sous le graphique
+    if durations:
+        for i, duration in enumerate(durations):
+            ax.text(time[i] + 0.5, -1, f'{duration}s', ha='center', va='center', fontsize=12, color='black')
+
+
     return fig
 
 # Interface Streamlit
