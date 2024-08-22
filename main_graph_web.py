@@ -36,7 +36,7 @@ def generer_diagramme_sequenciel(time, appareils, data, line_styles=None, title=
 st.title('Générateur de Diagramme de Séquence')
 
 # Saisie des paramètres par l'utilisateur
-time_max = st.slider('Temps maximum', 0, 12, 12)
+time_max = st.slider('Temps maximum', 0, 25, 25)
 time = np.arange(0, time_max + 1)
 
 nombre_appareils = st.number_input('Nombre d\'appareils', min_value=1, max_value=10, value=5)
