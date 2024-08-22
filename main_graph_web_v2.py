@@ -12,7 +12,7 @@ translations = {
         'device_name': 'Nom de l\'appareil',
         'states': 'États pour',
         'line_style': 'Style de ligne pour',
-        'durations': 'Durée (en secondes) pour chaque étape (séparées par des virgules)',
+        'durations': 'Durée (en secondes) pour chaque appareil (sous la courbe)',
         'generate': 'Générer le diagramme',
         'download': 'Télécharger le diagramme en PDF',
         'step': 'Étape',
@@ -25,7 +25,7 @@ translations = {
         'device_name': 'Name des Geräts',
         'states': 'Zustände für',
         'line_style': 'Linienstil für',
-        'durations': 'Dauer (in Sekunden) für jeden Schritt (getrennt durch Kommas)',
+        'durations': 'Dauer (in Sekunden) für jedes Gerät (unter der Kurve)',
         'generate': 'Diagramm erzeugen',
         'download': 'Diagramm als PDF herunterladen',
         'step': 'Schritt',
@@ -38,7 +38,7 @@ translations = {
         'device_name': 'Nome del dispositivo',
         'states': 'Stati per',
         'line_style': 'Stile di linea per',
-        'durations': 'Durata (in secondi) per ciascuna fase (separati da virgole)',
+        'durations': 'Durata (in secondi) per ogni dispositivo (sotto la curva)',
         'generate': 'Genera il diagramma',
         'download': 'Scarica il diagramma in PDF',
         'step': 'Passo',
@@ -75,13 +75,12 @@ def generer_diagramme_sequenciel(time, appareils, data, line_styles=None, durati
         ax.set_title(title, fontsize=20)
         ax.legend()
 
-        # Ajout des durées sous le graphique
+        # Ajout des durées sous la courbe concernée
         if durations:
-            if len(durations) == len(time):
-                for i, duration in enumerate(durations):
-                    ax.text(time[i] + 0.5, -1, f'{duration}s', ha='center', va='center', fontsize=12, color='black')
-            else:
-                st.error("Le nombre de durées ne correspond pas au nombre d'étapes.")
+            for i, duration_info in enumerate(durations):
+                appareil_index = appareils.index(duration_info['appareil'])
+                for step, duration in zip(duration_info['steps'], duration_info['durations']):
+                    ax.text(step, offsets[appareil_index] - 0.3, f'{duration}s', ha='center', va='center', fontsize=12, color='black')
 
         st.pyplot(fig)
         return fig
@@ -108,8 +107,16 @@ for i in range(nombre_appareils):
     style = st.selectbox(f"{translations[lang]['line_style']} {appareils[i]}", ['-', '--'], index=0)
     line_styles[appareils[i]] = style
 
-durations_input = st.text_input(translations[lang]['durations'], '5,5,5,5,5,5,5,5,5,5,5,5,5')
-durations = [int(x) for x in durations_input.split(',')]  # Conversion en entier
+durations = []
+if st.checkbox('Ajouter des durées spécifiques sous les courbes'):
+    for appareil in appareils:
+        steps = st.text_input(f"Étapes pour afficher la durée sous {appareil} (séparées par des virgules)", '5,10')
+        dur_values = st.text_input(f"Durées correspondantes (en secondes) pour {appareil} (séparées par des virgules)", '5,3')
+        durations.append({
+            'appareil': appareil,
+            'steps': [int(x) for x in steps.split(',')],
+            'durations': [int(x) for x in dur_values.split(',')]
+        })
 
 title = st.text_input(translations[lang]['sequence_diagram'], translations[lang]['sequence_diagram'])
 
