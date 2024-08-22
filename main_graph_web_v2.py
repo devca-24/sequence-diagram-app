@@ -93,7 +93,7 @@ lang = st.selectbox('Choisissez la langue', ['fr', 'de', 'it'])
 st.title(translations[lang]['title'])
 
 # Saisie des paramètres par l'utilisateur
-time_max = st.slider(translations[lang]['time_max'], 0, 25, 25)
+time_max = st.slider(translations[lang]['time_max'], 0, 12, 12)
 time = np.arange(0, time_max + 1)
 
 nombre_appareils = st.number_input(translations[lang]['num_devices'], min_value=1, max_value=10, value=5)
